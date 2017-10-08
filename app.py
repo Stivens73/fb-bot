@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+from lxml import html
 
 import requests
 from flask import Flask, request
@@ -23,7 +24,9 @@ def verify():
 @app.route('/', methods=['POST'])
 def webhook():
 
+
     # endpoint for processing incoming messaging events
+    #url = 'https://www.neighborhoodscout.com/ca/san-jose/crime'
 
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
@@ -36,14 +39,15 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                    print (sender_id)
+                    #print (sender_id)
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
-                    if (message_text == "Hi there!"):
-                      send_message(sender_id, "there hi!")
-                    else:
-                      send_message(sender_id, "roger that!")
+                    if (validate_city(message_text) == True):
+                      send_criminal_statistics()
+
+
+                    send_message(sender_id, "Welcome {{ user_first_name }}")
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -57,6 +61,30 @@ def webhook():
     return "ok", 200
 
 
+def validate_city(message_text):
+  url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(message_text)
+  page = requests.get(url)
+  if (page.status_code == 200):
+    tree = html.fromstring(page.content)
+    crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
+    violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
+    property_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[3]/p/strong')
+    murder_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[2]')
+    rape_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[3]')
+    robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
+    assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
+    return True
+  else:
+    return False
+
+
+#print("Crime index:", crime_index[0].text)
+#print('Number of violent cases:', violent_number[0].text)
+#print('Number of property-related cases:', property_number[0].text)
+#print('Murder:', murder_number[0].text)
+#print('Rape:', rape_number[0].text)
+#print('Robbery:', robbery_number[0].text)
+#print('Assault:', assault_number[0].text)
 def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
