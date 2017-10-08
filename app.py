@@ -136,7 +136,8 @@ def calculate_safety(city_input):
     if (page.status_code == 200):
         tree = html.fromstring(page.content)
         crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
-        crime_index = crime_index[0].text
+        crime_index = int(crime_index[0].text)
+
         try:
             crime_index += 1
             crime_index -= 1
