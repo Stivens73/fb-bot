@@ -87,6 +87,10 @@ def validate_city(message_text):
 #print('Rape:', rape_number[0].text)
 #print('Robbery:', robbery_number[0].text)
 #print('Assault:', assault_number[0].text)
+
+def send_criminal_statistics():
+  return "Statistics!"
+
 def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
