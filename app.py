@@ -51,12 +51,12 @@ def webhook():
                     if (messaging_event == "Hi"):
                         send_message(sender_id, "Welcome to the Crime Report Bot! Enter a city in California to get "
                                                 "crime statistics")
-
-                    if (validate_city(message_text) == True):
-                        current_city = message_text
-                        send_message(sender_id, get_crime_report(current_city))
                     else:
-                        send_message(sender_id, "Enter valid city")
+                        if (validate_city(message_text) == True):
+                            current_city = message_text
+                            send_message(sender_id, get_crime_report(current_city))
+                        else:
+                            send_message(sender_id, "Enter valid city")
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
