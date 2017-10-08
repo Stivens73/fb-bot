@@ -47,9 +47,10 @@ def webhook():
                     message_text = messaging_event["message"]["text"]  # the message's text
 
                     if (validate_city(message_text) == True):
-                      send_message(sender_id, "Your city is in our database")
+                        current_city = message_text
+                        send_message(sender_id, get_crime_report(current_city))
                     else:
-                      send_message(sender_id, "Enter valid city")
+                        send_message(sender_id, "Enter valid city")
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -94,9 +95,25 @@ def validate_city(message_text):
 #def send_criminal_statistics():
 #  return "Statistics!"
 
-def get_crime_report(message_text):
-  return "Crime report"
-
+def get_crime_report(city):
+  url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(message_text)
+  page = requests.get(url)
+  if (page.status.code == 200):
+      tree = html.fromstring(page.content)
+      crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
+      violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
+      property_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[3]/p/strong')
+      murder_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[2]')
+      rape_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[3]')
+      robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
+      assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
+      return ("Crime index is {}, number of violent cases is {}, \n number of property related cases is {}"
+              ", murder rate is {}, \n robberies - {}, and assaults is {} ").format(crime_index[0].text,
+                                                                                    property_number[0].text,
+                                                                                    murder_number[0].text,
+                                                                                    rape_number[0].text,
+                                                                                    robbery_number[0].text,
+                                                                                    assault_number[0].text)
 def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
