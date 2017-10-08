@@ -30,7 +30,7 @@ def webhook():
 
     # endpoint for processing incoming messaging events
     #url = 'https://www.neighborhoodscout.com/ca/san-jose/crime'
-    greeting_message()
+    #greeting_message()
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
 
@@ -60,7 +60,7 @@ def webhook():
                     pass
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                    pass
+                    greeting_message()
 
     return "ok", 200
 
