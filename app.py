@@ -1,10 +1,13 @@
 import os
 import sys
-import json
-from lxml import html
 
 import requests
 from flask import Flask, request
+import requests
+import json
+from lxml import html
+import re
+import zipcode
 
 app = Flask(__name__)
 
@@ -80,13 +83,10 @@ def validate_city(message_text):
     return False
 
 
-#print("Crime index:", crime_index[0].text)
-#print('Number of violent cases:', violent_number[0].text)
-#print('Number of property-related cases:', property_number[0].text)
-#print('Murder:', murder_number[0].text)
-#print('Rape:', rape_number[0].text)
-#print('Robbery:', robbery_number[0].text)
-#print('Assault:', assault_number[0].text)
+def get_crime_report(message_text):
+
+
+
 def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))

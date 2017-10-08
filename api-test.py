@@ -2,9 +2,10 @@
 import requests
 import json
 from lxml import html
-from uszipcode import ZipcodeSearchEngine
+import re
+import zipcode
 
-search = ZipcodeSearchEngine()
+# search = ZipcodeSearchEngine()
 
 
 url = 'https://www.neighborhoodscout.com/{}/{}/crime'
@@ -12,9 +13,20 @@ url = 'https://www.neighborhoodscout.com/{}/{}/crime'
 state = ''
 city = ''
 
-zipcode = search.by_zipcode("10001")
-state = zipcode.State
-city = zipcode.City.replace(" ", "-")
+address = '123 Main St, 94720 USA'
+postal_code = re.search('(\\d{5})', address).group(0)
+
+myzip = zipcode.isequal(postal_code)
+state = myzip.state  
+try:
+	city = myzip.city.replace(" ", "-")
+except Exception as e:
+	print(e)
+
+# zipcode = search.by_zipcode(postal_code)
+# state = zipcode.State
+# city = zipcode.City#.replace(" ", "-")
+
 
 url = url.format(state, city)
 
@@ -38,15 +50,22 @@ crime_list = {
 }
 
 other_crimes = {
-	'Your chances of becoming victim of a violent crime:': '//*[@id="data"]/section[2]/div[3]/div/div/div[2]/h3/div'
+	'Your chances of becoming a victim of a violent crime:': '//*[@id="data"]/section[2]/div[3]/div/div/div[2]/h3/div',
+	'Your chances of becoming a victim of a property crime:': '//*[@id="data"]/section[4]/div[3]/div/div/div[2]/h3/div',
 }
 
+full_list_of_crimes = []
+
+full_list_of_crimes.append('{} report'.format(city))
+
 for c in crime_list:
-	print(c, tree.xpath(crime_list[c])[0].text.split()[0])
+	full_list_of_crimes.append(c + " " + tree.xpath(crime_list[c])[0].text.split()[0])
 
 for d in other_crimes:
-	other_crime = tree.xpath(other_crimes[d])[0].text.replace('\n', " ")
+	full_list_of_crimes.append(d + " " + tree.xpath(other_crimes[d])[0].text.replace('\n', " "))
 
-	print(d, other_crime)
+
+for k in full_list_of_crimes:
+	print (k)
 
 
