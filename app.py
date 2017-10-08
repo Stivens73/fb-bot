@@ -8,6 +8,7 @@ import json
 from lxml import html
 import re
 import zipcode
+import numbers
 
 app = Flask(__name__)
 
@@ -136,6 +137,12 @@ def calculate_safety(city_input):
         tree = html.fromstring(page.content)
         crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
         crime_index = crime_index[0].text
+        try:
+            crime_index += 1
+            crime_index -= 1
+        except TypeError:
+            print ("error crime_index")
+
         print ("crime_index ", crime_index )
         #print("crime_index ", crime_index)
         """
