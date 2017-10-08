@@ -30,9 +30,10 @@ def webhook():
 
     # endpoint for processing incoming messaging events
     #url = 'https://www.neighborhoodscout.com/ca/san-jose/crime'
-
+    greeting_message()
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
+
 
     if data["object"] == "page":
 
@@ -137,6 +138,23 @@ def send_message(recipient_id, message_text):
         log(r.status_code)
         log(r.text)
 
+def greeting_message():
+    data = json.dumps({
+        "get_started": {
+            "payload": "Get Started"
+        }
+    })
+
+    params = {
+        "access_token": "EAAFT6DiOFhoBAEwRIzOUoqJ7r5ZBc66nvkDrUeHu8ZChGArOfBsv3TMk113MwQav27q6oHzwmuZBfvsKZCdlivuvBlgYU1YlFKgYiJX8nBMK9ZAO4RvFPRgoNbv4ALkEjsJkscoBd4n3ugsw2SCUZBvaZCkBSUoxVvVsakcMjscAAZDZD"
+    }
+    header = {
+        "Content-Type": "application/json"
+    }
+
+    r = requests.post("https://graph.facebook.com/v2.6/messaging_postback", params=params, headers = header, data=data)
+    if r.status_code != 200:
+        print("ERROR WITH GREETING MESSAGE")
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
     try:
