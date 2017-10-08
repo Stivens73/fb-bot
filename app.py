@@ -95,25 +95,31 @@ def validate_city(message_text):
 #def send_criminal_statistics():
 #  return "Statistics!"
 
-def get_crime_report(city):
-  url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(city)
-  page = requests.get(url)
-  if (page.status_code == 200):
-      tree = html.fromstring(page.content)
-      crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
-      violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
-      property_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[3]/p/strong')
-      murder_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[2]')
-      rape_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[3]')
-      robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
-      assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
-      return ("Crime index is {}, number of violent cases is {}, \n number of property related cases is {}"
-              ", murder rate is {}, \n robberies - {}, and assaults is {} ").format(crime_index[0].text,
-                                                                                    property_number[0].text,
-                                                                                    murder_number[0].text,
-                                                                                    rape_number[0].text,
-                                                                                    robbery_number[0].text,
-                                                                                    assault_number[0].text)
+def get_crime_report(city_input):
+
+    if ' ' in city_input:
+        city = city_input.replace(" ", "-").lower()
+    else:
+        city = city_input.lower()
+    url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(city)
+    page = requests.get(url)
+    if (page.status_code == 200):
+        tree = html.fromstring(page.content)
+        crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
+        violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
+        property_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[3]/p/strong')
+        murder_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[2]')
+        rape_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[3]')
+        robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
+        assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
+        return ("Crime index is {} \n Number of violent cases is {} \n Number of property related cases is {} \n"
+                  "Murder rate is {} \n Rape - {} \n Robberies - {} \n Assaults is {} \n").format(crime_index[0].text,
+                                                                                        violent_number[0].text,
+                                                                                        property_number[0].text,
+                                                                                        murder_number[0].text,
+                                                                                        rape_number[0].text,
+                                                                                        robbery_number[0].text,
+                                                                                        assault_number[0].text)
 def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
