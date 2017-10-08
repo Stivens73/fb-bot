@@ -48,7 +48,7 @@ def webhook():
                         "id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
-                    if (messaging_event[0]):
+                    if (messaging_event == "Hi"):
                         send_message(sender_id, "Welcome to the Crime Report Bot! Enter a city in California to get "
                                                 "crime statistics")
 
