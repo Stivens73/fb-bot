@@ -161,8 +161,8 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
       print("message is ", msg)
 #        msg = unicode(msg).format(*args, **kwargs)
 #        print u"{}: {}".format(datetime.now(), msg)
-    #except UnicodeEncodeError:
-    #    pass  # squash logging errors in case of non-ascii text
+    except UnicodeEncodeError:
+        pass  # squash logging errors in case of non-ascii text
     sys.stdout.flush()
 
 
