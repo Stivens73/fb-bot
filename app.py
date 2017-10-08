@@ -45,9 +45,8 @@ def webhook():
 
                     if (validate_city(message_text) == True):
                       send_criminal_statistics()
-
-
-                    send_message(sender_id, "Welcome {{ user_first_name }}")
+                    else:
+                      send_message(sender_id, "Welcome {{ user_first_name }}")
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
