@@ -47,9 +47,9 @@ def webhook():
                     message_text = messaging_event["message"]["text"]  # the message's text
 
                     if (validate_city(message_text) == True):
-                      send_criminal_statistics()
+                      send_message(sender_id, "Your city is in our database")
                     else:
-                      send_message(sender_id, "Welcome {{ user_first_name }}")
+                      send_message(sender_id, "Enter valid city")
 
                 if messaging_event.get("delivery"):  # delivery confirmation
                     pass
@@ -91,8 +91,8 @@ def validate_city(message_text):
 #print('Robbery:', robbery_number[0].text)
 #print('Assault:', assault_number[0].text)
 
-def send_criminal_statistics():
-  return "Statistics!"
+#def send_criminal_statistics():
+#  return "Statistics!"
 
 def get_crime_report(message_text):
   return "Crime report"
@@ -133,61 +133,3 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-"""
-from flask import Flask, request
-import json
-import requests
-
-app = Flask(__name__)
-
-# This needs to be filled with the Page Access Token that will be provided
-# by the Facebook App that will be created.
-PAT = 'EAAFT6DiOFhoBAEwRIzOUoqJ7r5ZBc66nvkDrUeHu8ZChGArOfBsv3TMk113MwQav27q6oHzwmuZBfvsKZCdlivuvBlgYU1YlFKgYiJX8nBMK9ZAO4RvFPRgoNbv4ALkEjsJkscoBd4n3ugsw2SCUZBvaZCkBSUoxVvVsakcMjscAAZDZD'
-
-@app.route('/', methods=['GET'])
-def handle_verification():
-  print ("Handling Verification.")
-  if request.args.get('hub.verify_token', '') == 'awesome_bot':
-    print ("Verification successful!")
-    return request.args.get('hub.challenge', '')
-  else:
-    print ("Verification failed!")
-    return 'Error, wrong validation token'
-
-@app.route('/', methods=['POST'])
-def handle_messages():
-  print (("Handling Messages"))
-  payload = request.get_data()
-  print (payload)
-  for sender, message in messaging_events(payload):
-    print ("Incoming from %s: %s" % (sender, message))
-    send_message(PAT, sender, message)
-  return "ok"
-
-def messaging_events(payload):
-  data = json.loads(payload)
-  messaging_events = data["entry"][0]["messaging"]
-  for event in messaging_events:
-    if "message" in event and "text" in event["message"]:
-      yield event["sender"]["id"], event["message"]["text"].encode('unicode_escape')
-    else:
-      yield event["sender"]["id"], "I can't echo this"
-
-
-def send_message(token, recipient, text):
-
-
-  r = requests.post("https://graph.facebook.com/v2.6/me/messages",
-    params={"access_token": token},
-    data=json.dumps({
-      "recipient": {"id": recipient},
-      "message": {"text": text.decode('unicode_escape')}
-    }),
-    headers={'Content-type': 'application/json'})
-  if r.status_code != requests.codes.ok:
-    print (r.text)
-
-if __name__ == '__main__':
-  app.run()
-  """
