@@ -144,9 +144,9 @@ def calculate_safety(city_input):
         except TypeError:
             print ("error crime_index")
 
-        print ("crime_index ", crime_index )
+        #print ("crime_index ", crime_index )
         #print("crime_index ", crime_index)
-        """
+
         if (crime_index > 0 and crime_index <= 10):
             return "Holy shit! Get out of that shithole!"
         elif (crime_index > 10 and crime_index < 30):
@@ -157,7 +157,6 @@ def calculate_safety(city_input):
             return "Your city is safe!"
         else:
             return "Invalid response"
-        """
 
 
 
