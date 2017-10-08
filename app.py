@@ -1,10 +1,13 @@
 import os
 import sys
-import json
-from lxml import html
 
 import requests
 from flask import Flask, request
+import requests
+import json
+from lxml import html
+import re
+import zipcode
 
 app = Flask(__name__)
 
@@ -90,6 +93,9 @@ def validate_city(message_text):
 
 def send_criminal_statistics():
   return "Statistics!"
+
+def get_crime_report(message_text):
+  return "Crime report"
 
 def send_message(recipient_id, message_text):
 
