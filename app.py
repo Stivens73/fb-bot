@@ -30,7 +30,7 @@ def webhook():
 
     # endpoint for processing incoming messaging events
     #url = 'https://www.neighborhoodscout.com/ca/san-jose/crime'
-    greeting_message()
+    #greeting_message()
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
 
@@ -42,10 +42,15 @@ def webhook():
 
                 if messaging_event.get("message"):  # someone sent us a message
 
-                    sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
-                    #print (sender_id)
-                    recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
+                    sender_id = messaging_event["sender"]["id"]  # the facebook ID of the person sending you the message
+                    # print (sender_id)
+                    recipient_id = messaging_event["recipient"][
+                        "id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
+
+                    if (messaging_event.get("message")[0]):
+                        send_message(sender_id, "Welcome to the Crime Report Bot! Enter a city in California to get "
+                                                "crime statistics")
 
                     if (validate_city(message_text) == True):
                         current_city = message_text
