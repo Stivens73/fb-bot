@@ -36,6 +36,7 @@ def webhook():
                 if messaging_event.get("message"):  # someone sent us a message
 
                     sender_id = messaging_event["sender"]["id"]        # the facebook ID of the person sending you the message
+                    print (sender_id)
                     recipient_id = messaging_event["recipient"]["id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
@@ -79,7 +80,8 @@ def send_message(recipient_id, message_text):
 
 def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
     try:
-        msg = unicode(msg).format(*args, **kwargs)
+      print("Error!")
+#        msg = unicode(msg).format(*args, **kwargs)
 #        print u"{}: {}".format(datetime.now(), msg)
     except UnicodeEncodeError:
         pass  # squash logging errors in case of non-ascii text
