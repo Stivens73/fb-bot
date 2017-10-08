@@ -98,7 +98,7 @@ def validate_city(message_text):
 def get_crime_report(city):
   url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(city)
   page = requests.get(url)
-  if (page.status.code == 200):
+  if (page.status_code == 200):
       tree = html.fromstring(page.content)
       crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
       violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
