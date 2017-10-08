@@ -48,13 +48,15 @@ def webhook():
                         "id"]  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event["message"]["text"]  # the message's text
 
-                    if (messaging_event == "Hi"):
+                    if messaging_event == "Hi":
                         send_message(sender_id, "Welcome to the Crime Report Bot! Enter a city in California to get "
                                                 "crime statistics")
                     else:
                         if (validate_city(message_text) == True):
                             current_city = message_text
                             send_message(sender_id, get_crime_report(current_city))
+                            safety_risk = calculate_safety(get_crime_report(current_city))
+                            send_message(sender_id, "We rate your city as - {}".format(safety_risk))
                         else:
                             send_message(sender_id, "Enter valid city")
 
@@ -120,6 +122,31 @@ def get_crime_report(city_input):
                                                                                         rape_number[0].text,
                                                                                         robbery_number[0].text,
                                                                                         assault_number[0].text)
+
+def calculate_safety(city_input):
+
+    if ' ' in city_input:
+        city = city_input.replace(" ", "-").lower()
+    else:
+        city = city_input.lower()
+    url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(city)
+    page = requests.get(url)
+    if (page.status_code == 200):
+        tree = html.fromstring(page.content)
+        crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
+        if (crime_index > 0 and crime_index <= 10):
+            return "Holy shit! Get out of that shithole!"
+        elif (crime_index > 10 and crime_index < 30):
+            return "It's alright but you will still get stabbed on your way to Walmart"
+        elif (crime_index > 30 and crime_index < 50):
+            return "Your city is almost safe"
+        elif (crime_index > 50 and crime_index <= 100):
+            return "Your city is safe!"
+        else:
+            return "Invalid response"
+
+
+
 def send_message(recipient_id, message_text):
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
