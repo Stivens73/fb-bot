@@ -63,7 +63,9 @@ def webhook():
 def validate_city(message_text):
   url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(message_text)
   page = requests.get(url)
+
   if (page.status_code == 200):
+    """
     tree = html.fromstring(page.content)
     crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
     violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
@@ -72,6 +74,7 @@ def validate_city(message_text):
     rape_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[3]')
     robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
     assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
+    """
     return True
   else:
     return False
