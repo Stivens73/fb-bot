@@ -96,7 +96,7 @@ def validate_city(message_text):
 #  return "Statistics!"
 
 def get_crime_report(city):
-  url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(message_text)
+  url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(city)
   page = requests.get(url)
   if (page.status.code == 200):
       tree = html.fromstring(page.content)
