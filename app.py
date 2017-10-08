@@ -65,23 +65,17 @@ def webhook():
 
 
 def validate_city(message_text):
-  url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(message_text)
-  page = requests.get(url)
+    if ' ' in message_text:
+        message_text = message_text.replace(" ", "-").lower()
+    else:
+        message_text = message_text.lower()
+    url = 'https://www.neighborhoodscout.com/ca/{}/crime'.format(message_text)
+    page = requests.get(url)
 
-  if (page.status_code == 200):
-    """
-    tree = html.fromstring(page.content)
-    crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
-    violent_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[2]/p/strong')
-    property_number = tree.xpath('//*[@id="data"]/section[1]/div[2]/div[2]/div/div/table/tbody/tr[1]/td[3]/p/strong')
-    murder_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[2]')
-    rape_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[3]')
-    robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
-    assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
-    """
-    return True
-  else:
-    return False
+    if (page.status_code == 200):
+        return True
+    else:
+        return False
 
 
 #print("Crime index:", crime_index[0].text)
@@ -113,7 +107,7 @@ def get_crime_report(city_input):
         robbery_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[4]')
         assault_number = tree.xpath('//*[@id="data"]/section[2]/div[5]/div/div/table/tbody/tr[1]/td[5]')
         return ("Crime index is {} \n Number of violent cases is {} \n Number of property related cases is {} \n"
-                  "Murder rate is {} \n Rape - {} \n Robberies - {} \n Assaults is {} \n").format(crime_index[0].text,
+                  "Murder rate is {} \nRape - {} Robberies - {} \n Assaults is {} \n").format(crime_index[0].text,
                                                                                         violent_number[0].text,
                                                                                         property_number[0].text,
                                                                                         murder_number[0].text,
