@@ -135,6 +135,8 @@ def calculate_safety(city_input):
     if (page.status_code == 200):
         tree = html.fromstring(page.content)
         crime_index = tree.xpath('//*[@class="score mountain-meadow"]')
+        print("crime_index ", crime_index)
+        """
         if (crime_index > 0 and crime_index <= 10):
             return "Holy shit! Get out of that shithole!"
         elif (crime_index > 10 and crime_index < 30):
@@ -145,6 +147,7 @@ def calculate_safety(city_input):
             return "Your city is safe!"
         else:
             return "Invalid response"
+        """
 
 
 
